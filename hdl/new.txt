@@ -1,0 +1,47 @@
+	
+  // inter-cell connection wires
+  Logic [n-1:0] row_wires [n-1:0]
+	Logic [n-1:0] col_wires [n-1:0]
+	
+	For (row = 0; row < (n-1); row++)
+		For (col = 0; col < (row +1); col++)
+			Minmax(
+				.a(col_wire[row][col]),
+				.b(row_wire[row][col]),
+				.max(col_wire[row+1][col+1]),
+				.min(row_wire[[row+1][col+1])
+			);
+		end
+	end
+
+  
+  // end row delays
+  For (x=o; x<(n-1); x++)
+		Col_wire[x+1][x+1] <= delay(1, row[x][x+1]);
+	End
+
+  
+  
+  //input delays
+  Col_wire[0][0] <= x[0]
+	For (i=0; i<n; i++)
+		Row_wire[i][0] <= delay(i, x[i+1])
+	End
+  
+  //output delays
+	For (i=0; i<n; i++)
+		Y[i] <= delay(i,y[i])
+	End
+	
+	
+  
+  
+  
+  Delay (cycles, signal)
+		Logic sig[cycles]
+		Sig[0] <= signal;
+		For (i=0; i<cycles; i++)
+			@ (posedge clk)
+				Sig[i+1] <= sig[i];
+		End
+Return(signal <= sig(i);
