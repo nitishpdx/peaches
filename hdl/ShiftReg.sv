@@ -8,17 +8,16 @@ module ShiftReg #(
   output logic [N-1:0] SO
 );
 
-  logic [N-1:0] temp [M-1:0];
+  logic [M-1:0][N-1:0] temp;
    
   always @(posedge Clk) begin
-    if (Clr)
-      foreach (temp[i])
-        temp[i] = {N-1{1'b0}};
-    else if (M===1)
+    if (Clr) 
+      temp = '0;
+    else begin
+      temp <<= N;
       temp[0] = SI;
-    else
-      temp = {temp[M-2:0],SI};
-   end
+    end
+  end
   assign SO = temp[M-1];
+
 endmodule
- 

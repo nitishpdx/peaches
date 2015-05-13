@@ -2,23 +2,19 @@
 
 module mWideSorter_TB();
   parameter N=4;    // individual input width
-  parameter M=4;    // number if inputs
+  parameter M=5;    // number of inputs
   logic [N-1:0] X[M-1:0];
   logic [N-1:0] Y[M-1:0];
   bit           clk;
   bit           rst;
-  
-  initial begin
-    clk = 0; 
-    rst = 0;
-  end
-  
-  always
-    #1 clk = !clk;
+
+  initial clk = 1; 
+  always #10 clk = ~clk;
+
   
   mWideSorter #(
-    .N      (4),
-    .M      (4)
+    .N      (N),
+    .M      (M)
   ) sort    (  
     .Clk    (clk),
     .Reset  (rst),
@@ -27,23 +23,32 @@ module mWideSorter_TB();
   );
   
   initial begin
-    //X=0; Y=0;
     rst = 1'b1;
-    #5  rst = ~rst;
+    #10  rst = ~rst;
     $display("\n");
-    $display("time\trst\ta\tb\tmin\tmax");
+    $display("time\trst\tX\t\t\Y");
     $display("============================================");
-    $monitor("%2d\t%0b\t%p\t%p", $time, rst, X, Y);
-         X[0]=8;X[1]=6;X[2]=1;X[3]=2;
-    #10  X[0]=1;X[1]=2;X[2]=3;X[3]=4;
-    #10  X[0]=8;X[1]=7;X[2]=7;X[3]=5;
-    #10  X[0]=4;X[1]=4;X[2]=8;X[3]=0;
-    #10  X[0]=1;X[1]=8;X[2]=3;X[3]=2;
-    #10  X[0]=0;X[1]=0;X[2]=1;X[3]=1;
-    #10  X='{8,8,8,8};//[0]=8;X[1]=8;X[2]=8;X[3]=8;
-    #100
+    $monitor("%2d\t%0d\t%p\t%p", $time, rst, X, Y);
+    //$display("%2d\t%0d\t%p\t%p", $time, rst, X, Y);
+   @(negedge clk) X = '{15,1,7,3,0};
+    //$display("%2d\t%0d\t%p\t%p", $time, rst, X, Y);
+    @(negedge clk) X = '{M{0}};
+/*
+    //$display("%2d\t%0d\t%p\t%p", $time, rst, X, Y);
+    #10  X = '{8,7,7,5,1};
+    //$display("%2d\t%0d\t%p\t%p", $time, rst, X, Y);
+    #10  X = '{4,1,2,3,8};
+    //$display("%2d\t%0d\t%p\t%p", $time, rst, X, Y);
+    #10  X = '{1,8,3,2,8};
+    //$display("%2d\t%0d\t%p\t%p", $time, rst, X, Y);
+    #10  X = '{0,0,1,1,8};
+    //$display("%2d\t%0d\t%p\t%p", $time, rst, X, Y);
+    #10  X = '{8,8,8,8,8};
+    //$display("%2d\t%0d\t%p\t%p", $time, rst, X, Y);
+*/
+    #1000
     $display("============================================");
     $display("\n\n");
-    $finish;
+    $stop;
   end
 endmodule

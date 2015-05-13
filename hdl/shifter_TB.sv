@@ -1,10 +1,12 @@
 `timescale 1ns/1ps
 module M ();
-  bit         Clk=0, Clr;
+  localparam  N=4;
+  localparam  M=5;
+  bit         Clk, Clr=0;
   logic [3:0] X, Y;
+
  
- 
-  nBitmWideShiftReg #(.M(2))
+  ShiftReg #(N,M)
   shift (
     .Clk(Clk),
     .Clr(Clr),
@@ -12,22 +14,22 @@ module M ();
     .SO(Y));
  
   always
-    #5 Clk = ~Clk; 
+    #1 Clk = ~Clk; 
   
   initial begin
+    @(posedge Clk) Clr=1; @(posedge Clk) Clr=0;
     $display("\n");
-    $display("time\tX(SI)\ttemp\tY(SO)");
-    $display("==========================");
-    $monitor("%2d\t%p\t%p\t%p",$time, X,shift.temp, Y);
-      #10 X=15;
-      #10 X=14;
-      #10 X=8;
-      #10 Clr=1;
-      #10 Clr=2;
-      #10 X=1;
-      #10 X=2;
-      #10 X=3;
-      #100
+    $display("time\tX(SI)\t         temp\t\tY(SO)");
+    $display("===========================================");
+    $monitor("%2d\t%p\t%2p\t  %p",$time, X,shift.temp, Y);
+    @(negedge Clk) X=31;
+    @(negedge Clk) X=1;
+    @(negedge Clk) X=2;
+    @(negedge Clk) X=3;
+    @(negedge Clk) X=4;
+    //@(negedge Clk) Clr=1; @(negedge Clk) Clr=0;
+    //repeat (10) @(negedge Clk) X=$random;
+    #100
     $finish;
     
   end
